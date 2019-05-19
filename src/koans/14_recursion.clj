@@ -3,21 +3,60 @@
 
 (defn is-even? [n]
   (if (= n 0)
-    __
-    (___ (is-even? (dec n)))))
+    true
+    (not (is-even? (dec n)))))
 
 (defn is-even-bigint? [n]
   (loop [n   n
          acc true]
     (if (= n 0)
-      __
+      acc
       (recur (dec n) (not acc)))))
 
 (defn recursive-reverse [coll]
-  __)
+  (loop [head (first coll)
+         body (next coll)
+         result '()]
+    (if (nil? head)
+      result
+      (recur (first body) (next body) (cons head result)))))
 
 (defn factorial [n]
-  __)
+  (loop [n      n
+         result 1]
+    (if (<= n 1)
+      result
+      (recur (dec n) (* n result))))
+  )
+; also possible:
+;
+; (defn factorial [n] (apply * (range 1N (inc n))))
+; (defn factorial [n] (reduce * (range 1N (inc n))))
+;
+; (Both work because * can take any number of arguments; the difference is that:
+;   - apply uses functions of variable arity
+;   - reduce uses functions that can take only 2 arguments
+; Reduce is more optimised in general, however apply can have specific optimisations like for str)
+;
+; (In fact (*) for (> 2 arguments) calls (reduce) under the hood; see (source *))
+;
+; orrr you can also do this:
+;
+;(defn factorial
+;  ([] (concat [1N] (factorial2 1N 1N))) ; because special case, 0! == 1
+;  ([prev n]
+;   (let [current (* prev n)]
+;     (cons current (lazy-seq (factorial2 current (inc n)))))))
+;
+; or if you want to use the builtin iterate instead of lazy-seq:
+;
+;(defn factorial []
+;  (cons 1N (map first (iterate (fn [[current n]] ([(* current (inc n)), (inc n)]) [1N 1N]))))
+;
+; and then
+; (map #(str %1 " - " %2) (take 10 (factorial)) (range 10))
+
+;#(take % (map first (iterate (fn [[f s]] [s, (+ f s)]) [0N, 1N])))
 
 (meditations
   "Recursion ends with a base case"
